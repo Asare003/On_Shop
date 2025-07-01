@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        body { font-family: sans-serif; font-size: 14px; }
+        h1 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        .total { font-weight: bold; }
+        .section { margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<h1>Invoice - Order #{{ order.id }}</h1>
+
+<div class="section">
+    <p><strong>Date:</strong> {{ order.created_at|date:"F j, Y" }}</p>
+    <p><strong>Customer:</strong> {{ order.user.get_full_name }} ({{ order.user.email }})</p>
+</div>
+
+{% if shipping %}
+<div class="section">
+    <p><strong>Shipping Address:</strong></p>
+    <p>{{ shipping.address }}, {{ shipping.city }}, {{ shipping.state }} {{ shipping.zip_code }}</p>
+</div>
+{% endif %}
+
+<div class="section">
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>GHS {{ item.product.price }}</td>
+                <td>GHS {{ item.get_total }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No items in this order.</td></tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="total">Grand Total</td>
+                <td class="total">GHS {{ order.get_total }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+</body>
+</html>

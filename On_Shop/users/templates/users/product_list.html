@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-6">Shop by Category</h2>
+
+<!-- Tabs -->
+<div class="flex space-x-4 border-b border-gray-300 mb-6 overflow-x-auto">
+  {% for category in categories %}
+    <a href="#{{ category.slug }}" class="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-black">
+      {{ category.name }}
+    </a>
+  {% endfor %}
+</div>
+
+<!-- Category Sections -->
+{% for slug, products in products_by_category.items %}
+  <div id="{{ slug }}" class="mb-12">
+    <h3 class="text-xl font-semibold mb-4">{{ slug|capfirst }}</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      {% for product in products %}
+        <a href="{% url 'product_detail' product.slug %}" class="block bg-white p-4 rounded-xl shadow-md transform transition duration-300 hover:scale-105 hover:shadow-xl hover:bg-gray-50 relative">
+          
+          {% if product.stock == 0 %}
+            <span class="absolute top-2 right-2 bg-red-100 text-red-700 text-xs font-semibold px-2 py-0.5 rounded-full">Sold Out</span>
+          {% elif product.stock <= 3 %}
+            <span class="absolute top-2 right-2 bg-yellow-100 text-yellow-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+              Only {{ product.stock }} left!
+            </span>
+          {% else %}
+            <span class="absolute top-2 right-2 bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-full">In Stock</span>
+          {% endif %}
+
+          <img src="{{ product.image.url }}" class="w-full h-40 object-contain mb-2 rounded">
+          <h4 class="font-bold text-gray-800">{{ product.name }}</h4>
+          <p class="text-sm text-gray-600 mb-2">{{ product.description|truncatechars:40 }}</p>
+          <p class="text-lg font-semibold text-green-700">GHS {{ product.price }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endfor %}
+{% endblock %}

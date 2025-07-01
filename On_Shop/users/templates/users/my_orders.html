@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>My Orders</h2>
+{% if orders %}
+  <ul>
+    {% for order in orders %}
+      <li>
+        Order #{{ order.id }} | {{ order.created_at|date:"M d, Y H:i" }}<br>
+        Total: ${{ order.get_total }}<br>
+        Transaction ID: {{ order.transaction_id }}
+      </li><br>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No completed orders yet.</p>
+{% endif %}
+{% endblock %}

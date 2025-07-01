@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center py-10">
+    <h2 class="text-2xl font-bold mb-4">Thank You!</h2>
+    <p class="mb-2">Your order <strong>#{{ order.id }}</strong> has been placed successfully.</p>
+
+    <p class="text-lg font-semibold mt-6 mb-2">Order Summary:</p>
+    <ul class="mb-6 max-w-md mx-auto text-left">
+      {% for item in order.items.all %}
+        <li class="mb-2">
+          {{ item.quantity }} × {{ item.product.name }} - GHS {{ item.get_total }}
+        </li>
+      {% empty %}
+        <li>No items found in this order.</li>
+      {% endfor %}
+    </ul>
+
+    <p class="mb-6 text-lg font-bold">Total: GHS {{ order.get_total }}</p>
+
+    <a href="{% url 'whatsapp_confirm' order.id %}" class="inline-block bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 mr-3">
+        Confirm on WhatsApp
+    </a>
+    <a href="{% url 'download_invoice' order.id %}" class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+        Download Receipt
+    </a>
+    <a href="{% url 'product_list' %}" class="inline-block bg-gray-700 text-white px-6 py-2 rounded hover:bg-gray-800">
+        Back to Shop
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+  setTimeout(() => {
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+  }, 500);
+</script>
+{% endblock %}
